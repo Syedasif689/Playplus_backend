@@ -1,20 +1,36 @@
 package com.playplus.controller;
 
-import com.playplus.model.User;
-import com.playplus.model.Video;
-import com.playplus.repository.VideoRepository;
-import com.playplus.service.UserService;
-import com.playplus.config.JwtUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.playplus.config.JwtUtil;
+import com.playplus.model.User;
+import com.playplus.model.Video;
+import com.playplus.repository.VideoRepository;
+import com.playplus.service.UserService;
+
 @RestController
 @RequestMapping("/api/videos")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = "http://localhost:3000",
+    allowedHeaders = "*",
+    allowCredentials = "true"
+)
+
 public class VideoController {
     
     @Autowired
