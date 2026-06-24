@@ -180,18 +180,30 @@ public ResponseEntity<?> likeVideo(
         @PathVariable Long videoId) {
 
     try {
+
         Long userId = getUserIdFromAuthHeader(authHeader);
 
+        System.out.println("========== LIKE DEBUG ==========");
         System.out.println("UserId = " + userId);
         System.out.println("VideoId = " + videoId);
 
-        Video video = userService.likeVideo(userId, videoId);
+        User user = userService.findById(userId);
+        System.out.println("User = " + user);
 
-        return ResponseEntity.ok(video);
+        Video video = videoRepository.findById(videoId).orElse(null);
+        System.out.println("Video = " + video);
+
+        Video result = userService.likeVideo(userId, videoId);
+
+        System.out.println("Result = " + result);
+        System.out.println("================================");
+
+        return ResponseEntity.ok(result);
 
     } catch(Exception e) {
         e.printStackTrace();
-        return ResponseEntity.internalServerError().body(e.getMessage());
+        return ResponseEntity.internalServerError()
+                .body(e.getMessage());
     }
 }
     
