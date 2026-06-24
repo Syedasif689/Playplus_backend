@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -14,7 +16,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
-
 @Entity
 @Table(name = "videos")
 public class Video {
@@ -50,14 +51,14 @@ public class Video {
     private LocalDateTime uploadedAt;
     
     // ✅ NEW: Track unique viewers for view counting
-    @ElementCollection
-    @CollectionTable(
-        name = "video_viewers", 
-        joinColumns = @JoinColumn(name = "video_id")
-    )
-    @Column(name = "user_id")
-    private List<Long> viewers = new ArrayList<>();
-    
+   @JsonIgnore
+   @ElementCollection
+   @CollectionTable(
+    name = "video_viewers",
+    joinColumns = @JoinColumn(name = "video_id")
+   )
+   @Column(name = "user_id")
+   private List<Long> viewers = new ArrayList<>();
     @Column(name = "allow_download", nullable = false)
     private Boolean allowDownload = false;
     
