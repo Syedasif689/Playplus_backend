@@ -174,28 +174,26 @@ public class VideoController {
         return ResponseEntity.ok(response);
     }
     
-    @PostMapping("/{videoId}/like")
-    public ResponseEntity<?> likeVideo(
-            @RequestHeader("Authorization") String authHeader,
-            @PathVariable Long videoId) {
-        
+   @PostMapping("/{videoId}/like")
+public ResponseEntity<?> likeVideo(
+        @RequestHeader("Authorization") String authHeader,
+        @PathVariable Long videoId) {
+
+    try {
         Long userId = getUserIdFromAuthHeader(authHeader);
-        if (userId == null) {
-            return ResponseEntity.status(401).body("User not authenticated");
-        }
-        
+
+        System.out.println("UserId = " + userId);
+        System.out.println("VideoId = " + videoId);
+
         Video video = userService.likeVideo(userId, videoId);
-        if (video == null) {
-            return ResponseEntity.notFound().build();
-        }
-        
-        Map<String, Object> response = new HashMap<>();
-        response.put("likes", video.getLikes());
-        response.put("dislikes", video.getDislikes());
-        response.put("reaction", "like");
-        
-        return ResponseEntity.ok(response);
+
+        return ResponseEntity.ok(video);
+
+    } catch(Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.internalServerError().body(e.getMessage());
     }
+}
     
     @PostMapping("/{videoId}/dislike")
     public ResponseEntity<?> dislikeVideo(
