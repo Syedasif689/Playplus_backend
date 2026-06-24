@@ -187,26 +187,42 @@ public ResponseEntity<?> likeVideo(
         System.out.println("UserId = " + userId);
         System.out.println("VideoId = " + videoId);
 
+        System.out.println("STEP 1");
+
         User user = userService.findById(userId);
+
         System.out.println("User = " + user);
 
+        System.out.println("STEP 2");
+
         Video video = videoRepository.findById(videoId).orElse(null);
+
         System.out.println("Video = " + video);
 
+        System.out.println("STEP 3");
+
         Video result = userService.likeVideo(userId, videoId);
+
+        System.out.println("STEP 4");
 
         System.out.println("Result = " + result);
         System.out.println("================================");
 
         return ResponseEntity.ok(result);
 
-    } catch(Exception e) {
-        e.printStackTrace();
+    } catch (Exception e) {
+
+        System.out.println("❌ LIKE API FAILED");
+        System.out.println("Exception Class: " + e.getClass().getName());
+        System.out.println("Exception Message: " + e.getMessage());
+
+        e.printStackTrace(System.out);
+
         return ResponseEntity.internalServerError()
-                .body(e.getMessage());
+                .body("ERROR: " + e.getClass().getName()
+                        + " : " + e.getMessage());
     }
 }
-    
     @PostMapping("/{videoId}/dislike")
     public ResponseEntity<?> dislikeVideo(
             @RequestHeader("Authorization") String authHeader,
