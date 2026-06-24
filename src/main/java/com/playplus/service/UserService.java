@@ -165,28 +165,48 @@ public class UserService {
     
     // Video Like methods
     @Transactional
-    public Video likeVideo(Long userId, Long videoId) {
-        User user = findById(userId);
-        Video video = videoRepository.findById(videoId).orElse(null);
-        
-        if (user == null || video == null) return null;
-        
-        if (user.getDislikedVideos().contains(videoId)) {
-            user.getDislikedVideos().remove(videoId);
-            video.setDislikes(video.getDislikes() - 1);
-        }
-        
-        if (user.getLikedVideos().contains(videoId)) {
-            user.getLikedVideos().remove(videoId);
-            video.setLikes(video.getLikes() - 1);
-        } else {
-            user.getLikedVideos().add(videoId);
-            video.setLikes(video.getLikes() + 1);
-        }
-        
-        userRepository.save(user);
-        return videoRepository.save(video);
+public Video likeVideo(Long userId, Long videoId) {
+
+    System.out.println("STEP 1");
+
+    User user = findById(userId);
+
+    System.out.println("STEP 2");
+
+    Video video = videoRepository.findById(videoId).orElse(null);
+
+    System.out.println("STEP 3");
+
+    System.out.println("likedVideos = " + user.getLikedVideos());
+    System.out.println("dislikedVideos = " + user.getDislikedVideos());
+
+    if (user == null || video == null) return null;
+
+    System.out.println("STEP 4");
+
+    if (user.getDislikedVideos().contains(videoId)) {
+        user.getDislikedVideos().remove(videoId);
+        video.setDislikes(video.getDislikes() - 1);
     }
+
+    System.out.println("STEP 5");
+
+    if (user.getLikedVideos().contains(videoId)) {
+        user.getLikedVideos().remove(videoId);
+        video.setLikes(video.getLikes() - 1);
+    } else {
+        user.getLikedVideos().add(videoId);
+        video.setLikes(video.getLikes() + 1);
+    }
+
+    System.out.println("STEP 6");
+
+    userRepository.save(user);
+
+    System.out.println("STEP 7");
+
+    return videoRepository.save(video);
+}
     
     @Transactional
     public Video dislikeVideo(Long userId, Long videoId) {
