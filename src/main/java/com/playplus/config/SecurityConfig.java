@@ -45,28 +45,30 @@ public CorsConfigurationSource corsConfigurationSource() {
     source.registerCorsConfiguration("/**", configuration);
     return source;
 }
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                // Public endpoints
-                .requestMatchers("/api/auth/**").permitAll()
-                .requestMatchers("/api/videos/all").permitAll()
-                .requestMatchers("/api/videos/creator/**").permitAll()
-                .requestMatchers("/api/videos/**").permitAll()
-                .requestMatchers("/api/comments/**").permitAll()
-                .requestMatchers("/api/channels/**").permitAll()
-                // Authenticated user-specific endpoints
-                .requestMatchers("/api/user/subscriptions").authenticated()
-                .requestMatchers("/api/user/history").authenticated()
-                .requestMatchers("/api/user/liked-videos").authenticated()
-                // Any other request needs authentication
-                .anyRequest().authenticated()
-            )
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+   @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+        .csrf(csrf -> csrf.disable())
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(auth -> auth
+            // ✅ Public endpoints – FIRST
+            .requestMatchers("/").permitAll()
+            .requestMatchers("/error").permitAll()
+            .requestMatchers("/api/auth/**").permitAll()
+            .requestMatchers("/api/videos/all").permitAll()
+            .requestMatchers("/api/videos/creator/**").permitAll()
+            .requestMatchers("/api/videos/**").permitAll()
+            .requestMatchers("/api/comments/**").permitAll()
+            .requestMatchers("/api/channels/**").permitAll()
+            // ✅ Authenticated endpoints
+            .requestMatchers("/api/user/subscriptions").authenticated()
+            .requestMatchers("/api/user/history").authenticated()
+            .requestMatchers("/api/user/liked-videos").authenticated()
+            // ✅ All other requests – LAST
+            .anyRequest().authenticated()
+        )
+        .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+}
 }
