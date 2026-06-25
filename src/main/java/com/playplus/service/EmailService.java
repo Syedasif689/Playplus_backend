@@ -8,54 +8,58 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    
+
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")       // Your actual email (e.g., asifsayed635@gmail.com)
+    @Value("${spring.mail.username}")
     private String mailUsername;
 
-    @Value("${spring.mail.properties.mail.from}")  // "Play+ <asifsayed635@gmail.com>"
+    @Value("${spring.mail.properties.mail.from}")
     private String fromAddress;
-    
+
     public void sendVerificationCode(String to, String code) {
-    SimpleMailMessage message = new SimpleMailMessage();
 
-    message.setFrom("asifsayed635@gmail.com");
-    message.setTo(to);
-    message.setSubject("Play+ Password Reset Verification Code");
-    message.setText(
-        "Hello,\n\n" +
-        "Your verification code is: " + code
-    );
-
-    try {
-        System.out.println("MAIL USER = " + mailUsername);
-        System.out.println("Sending mail to = " + to);
-
-        mailSender.send(message);
-
-        System.out.println("✅ EMAIL SENT SUCCESSFULLY");
-
-    } catch (Exception e) {
-
-        System.out.println("❌ EMAIL ERROR:");
-        e.printStackTrace();
-    }
-}
-    
-    public void sendPasswordResetConfirmation(String to) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("asifsayed635@gmail.com");  // ✅ Same here
+
+        message.setFrom("asifsayed635@gmail.com");
+        message.setTo(to);
+        message.setSubject("Play+ Password Reset Verification Code");
+        message.setText(
+            "Hello,\n\n" +
+            "Your verification code is: " + code
+        );
+
+        try {
+
+            System.out.println("MAIL USER = " + mailUsername);
+            System.out.println("Sending mail to = " + to);
+
+            mailSender.send(message);
+
+            System.out.println("✅ EMAIL SENT SUCCESSFULLY");
+
+        } catch (Exception e) {
+
+            System.out.println("❌ EMAIL ERROR:");
+            e.printStackTrace();
+
+            throw new RuntimeException("Email sending failed", e);
+        }
+    }
+
+    public void sendPasswordResetConfirmation(String to) {
+
+        SimpleMailMessage message = new SimpleMailMessage();
+
+        message.setFrom("asifsayed635@gmail.com");
         message.setTo(to);
         message.setSubject("Play+ Password Reset Confirmation");
         message.setText(
             "Hello,\n\n" +
-            "Your password has been successfully reset for Play+.\n\n" +
-            "If you did not perform this action, please contact support immediately.\n\n" +
-            "Regards,\n" +
-            "Play+ Team"
+            "Your password has been successfully reset for Play+."
         );
+
         mailSender.send(message);
     }
 }
