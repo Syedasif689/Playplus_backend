@@ -15,8 +15,7 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String mailUsername;
 
-    @Value("${spring.mail.properties.mail.from}")
-    private String fromAddress;
+  
 
     public void sendVerificationCode(String to, String code) {
 
