@@ -80,11 +80,16 @@ public class VideoController {
         try {
             System.out.println("👁️ View tracking request for video: " + videoId);
             
-            Video video = videoRepository.findById(videoId).orElse(null);
-            if (video == null) {
-                System.out.println("❌ Video not found: " + videoId);
-                return ResponseEntity.notFound().build();
-            }
+           Video video = videoRepository.findById(videoId).orElse(null);
+       if (video == null) {
+        System.out.println("❌ Video not found: " + videoId);
+        return ResponseEntity.notFound().build();
+}
+
+// Prevent NullPointerException
+if (video.getViews() == null) {
+    video.setViews(0);
+}
             
             Long userId = null;
             boolean alreadyViewed = false;
@@ -147,6 +152,7 @@ public class VideoController {
             response.put("views", video.getViews());
             response.put("viewed", !alreadyViewed);
             response.put("userId", userId);
+             response.put("reaction", "none");
             
             return ResponseEntity.ok(response);
             
@@ -159,21 +165,30 @@ public class VideoController {
     
     @GetMapping("/{videoId}/reaction")
     public ResponseEntity<?> getReaction(
-            @RequestHeader("Authorization") String authHeader,
-            @PathVariable Long videoId) {
-        
-        Long userId = getUserIdFromAuthHeader(authHeader);
-        if (userId == null) {
-            return ResponseEntity.status(401).body("User not authenticated");
-        }
-        
-        String reaction = userService.getVideoReaction(userId, videoId);
+        @RequestHeader(value = "Authorization", required = false) String authHeader,
+        @PathVariable Long videoId) {
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
         Map<String, String> response = new HashMap<>();
-        response.put("reaction", reaction);
-        
+        response.put("reaction", "none");
         return ResponseEntity.ok(response);
     }
-    
+
+    Long userId = getUserIdFromAuthHeader(authHeader);
+
+    if (userId == null) {
+        Map<String, String> response = new HashMap<>();
+        response.put("reaction", "none");
+        return ResponseEntity.ok(response);
+    }
+
+    String reaction = userService.getVideoReaction(userId, videoId);
+
+    Map<String, String> response = new HashMap<>();
+    response.put("reaction", reaction);
+
+    return ResponseEntity.ok(response);
+}
    @PostMapping("/{videoId}/like")
 public ResponseEntity<?> likeVideo(
         @RequestHeader("Authorization") String authHeader,
