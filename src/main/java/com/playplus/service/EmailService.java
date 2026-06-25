@@ -15,13 +15,14 @@ public class EmailService {
     @Value("${spring.mail.username}")
     private String mailUsername;
 
-  
+    @Value("${spring.mail.properties.mail.from}")
+    private String fromAddress;
 
     public void sendVerificationCode(String to, String code) {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom("asifsayed635@gmail.com");
+        message.setFrom(fromAddress);
         message.setTo(to);
         message.setSubject("Play+ Password Reset Verification Code");
         message.setText(
@@ -51,7 +52,7 @@ public class EmailService {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
-        message.setFrom("asifsayed635@gmail.com");
+        message.setFrom(fromAddress);
         message.setTo(to);
         message.setSubject("Play+ Password Reset Confirmation");
         message.setText(
