@@ -19,27 +19,34 @@ public class EmailService {
     private String fromAddress;
     
     public void sendVerificationCode(String to, String code) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailUsername);  // ✅ Shows "Play+" as sender name
-        message.setTo(to);
-        message.setSubject("Play+ Password Reset Verification Code");
-        message.setText(
-            "Hello,\n\n" +
-            "You have requested to reset your password for Play+.\n\n" +
-            "Your verification code is: " + code + "\n\n" +
-            "This code will expire in 10 minutes.\n\n" +
-            "If you did not request this, please ignore this email.\n\n" +
-            "Regards,\n" +
-            "Play+ Team"
-        );
+    SimpleMailMessage message = new SimpleMailMessage();
+
+    message.setFrom("asifsayed635@gmail.com");
+    message.setTo(to);
+    message.setSubject("Play+ Password Reset Verification Code");
+    message.setText(
+        "Hello,\n\n" +
+        "Your verification code is: " + code
+    );
+
+    try {
         System.out.println("MAIL USER = " + mailUsername);
         System.out.println("Sending mail to = " + to);
+
         mailSender.send(message);
+
+        System.out.println("✅ EMAIL SENT SUCCESSFULLY");
+
+    } catch (Exception e) {
+
+        System.out.println("❌ EMAIL ERROR:");
+        e.printStackTrace();
     }
+}
     
     public void sendPasswordResetConfirmation(String to) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(mailUsername);  // ✅ Same here
+        message.setFrom("asifsayed635@gmail.com");  // ✅ Same here
         message.setTo(to);
         message.setSubject("Play+ Password Reset Confirmation");
         message.setText(
