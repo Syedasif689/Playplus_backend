@@ -20,7 +20,7 @@ public class EmailService {
     
     public void sendVerificationCode(String to, String code) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromAddress);  // ✅ Shows "Play+" as sender name
+        message.setFrom(mailUsername);  // ✅ Shows "Play+" as sender name
         message.setTo(to);
         message.setSubject("Play+ Password Reset Verification Code");
         message.setText(
@@ -32,12 +32,14 @@ public class EmailService {
             "Regards,\n" +
             "Play+ Team"
         );
+        System.out.println("MAIL USER = " + mailUsername);
+        System.out.println("Sending mail to = " + to);
         mailSender.send(message);
     }
     
     public void sendPasswordResetConfirmation(String to) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(fromAddress);  // ✅ Same here
+        message.setFrom(mailUsername);  // ✅ Same here
         message.setTo(to);
         message.setSubject("Play+ Password Reset Confirmation");
         message.setText(
