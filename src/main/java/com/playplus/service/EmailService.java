@@ -26,9 +26,13 @@ public class EmailService {
         message.setTo(to);
         message.setSubject("Play+ Password Reset Verification Code");
         message.setText(
-            "Hello,\n\n" +
-            "Your verification code is: " + code
-        );
+            "Welcome to Play+\n\n" +
+            "Your verification code is: " + code + "\n\n" +
+            "This code will expire in 10 minutes.\n\n" +
+            "If you did not request this code, please ignore this email.\n\n" +
+            "Thanks,\n" +
+            "Play+ Team"
+          );
 
         try {
 
@@ -48,7 +52,7 @@ public class EmailService {
         }
     }
 
-    public void sendPasswordResetConfirmation(String to) {
+    /**public void sendPasswordResetConfirmation(String to) {
 
         SimpleMailMessage message = new SimpleMailMessage();
 
@@ -61,5 +65,5 @@ public class EmailService {
         );
 
         mailSender.send(message);
-    }
+    }/** */
 }
