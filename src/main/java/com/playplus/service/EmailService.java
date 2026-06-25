@@ -12,8 +12,7 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
-    private String mailUsername;
+   
 
     @Value("${spring.mail.properties.mail.from}")
     private String fromAddress;
@@ -36,7 +35,7 @@ public class EmailService {
 
         try {
 
-            System.out.println("MAIL USER = " + mailUsername);
+           
             System.out.println("Sending mail to = " + to);
 
             mailSender.send(message);

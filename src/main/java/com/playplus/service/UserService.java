@@ -140,29 +140,32 @@ public class UserService {
     
     // Reset password
     @Transactional
-    public boolean resetPassword(String resetToken, String newPassword) {
-        User user = userRepository.findByResetToken(resetToken).orElse(null);
-        if (user == null) {
-            return false;
-        }
-        
-        if (user.getResetTokenExpiry() == null || 
-            user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
-            return false;
-        }
-        
-        user.setPassword(passwordEncoder.encode(newPassword));
-        user.setResetToken(null);
-        user.setResetTokenExpiry(null);
-        user.setVerificationCode(null);
-        user.setVerificationCodeExpiry(null);
-        userRepository.save(user);
-        
-        emailService.sendPasswordResetConfirmation(user.getEmail());
-        
-        return true;
+public boolean resetPassword(String resetToken, String newPassword) {
+
+    User user = userRepository.findByResetToken(resetToken).orElse(null);
+
+    if (user == null) {
+        return false;
     }
-    
+
+    if (user.getResetTokenExpiry() == null ||
+        user.getResetTokenExpiry().isBefore(LocalDateTime.now())) {
+        return false;
+    }
+
+    user.setPassword(passwordEncoder.encode(newPassword));
+    user.setResetToken(null);
+    user.setResetTokenExpiry(null);
+    user.setVerificationCode(null);
+    user.setVerificationCodeExpiry(null);
+
+    userRepository.save(user);
+
+    // REMOVE THIS LINE
+    // emailService.sendPasswordResetConfirmation(user.getEmail());
+
+    return true;
+}
     // Video Like methods
     @Transactional
 public Video likeVideo(Long userId, Long videoId) {
