@@ -56,6 +56,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             // ✅ Public endpoints – FIRST
             .requestMatchers("/").permitAll()
             .requestMatchers("/error").permitAll()
+            .requestMatchers("/health").permitAll() 
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers("/api/videos/all").permitAll()
             .requestMatchers("/api/videos/creator/**").permitAll()
