@@ -365,8 +365,12 @@ public ResponseEntity<?> likeVideo(
             
             List<Comment> comments = commentRepository.findByVideoId(videoId);
             commentRepository.deleteAll(comments);
-            videoRepository.delete(video);
-            
+
+           // Delete history records first
+           videoHistoryRepository.deleteAllByVideoId(videoId);
+
+            // Then delete video
+           videoRepository.delete(video);
             Map<String, String> response = new HashMap<>();
             response.put("message", "Video deleted successfully");
             return ResponseEntity.ok(response);
