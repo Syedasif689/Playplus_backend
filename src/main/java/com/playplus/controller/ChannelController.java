@@ -120,21 +120,36 @@ public class ChannelController {
         }
     }
 
-    private Long getUserIdFromAuthHeader(String authHeader) {
-        try {
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
-                String username = jwtUtil.extractUsername(token);
-                if (username != null) {
-                    User user = userService.findByUsername(username);
-                    if (user != null) {
-                        return user.getId();
-                    }
+   private Long getUserIdFromAuthHeader(String authHeader) {
+    try {
+
+        System.out.println("AUTH HEADER = " + authHeader);
+
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+
+            String token = authHeader.substring(7);
+
+            System.out.println("TOKEN = " + token);
+
+            String username = jwtUtil.extractUsername(token);
+
+            System.out.println("USERNAME FROM TOKEN = " + username);
+
+            if (username != null) {
+
+                User user = userService.findByUsername(username);
+
+                System.out.println("USER FROM DB = " + user);
+
+                if (user != null) {
+                    return user.getId();
                 }
             }
-        } catch (Exception e) {
-            System.out.println("Error extracting user ID from token: " + e.getMessage());
         }
-        return null;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+
+    return null;
+}
 }

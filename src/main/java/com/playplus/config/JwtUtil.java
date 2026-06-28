@@ -35,33 +35,42 @@ public class JwtUtil {
     }
 
     public String extractUsername(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getSigningKey())
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody()
-                    .getSubject();
-        } catch (ExpiredJwtException e) {
-            System.out.println("JWT expired");
-            return null;
-        } catch (Exception e) {
-            return null;
-        }
+    try {
+        return Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+
+    } catch (ExpiredJwtException e) {
+        System.out.println("JWT expired");
+        return null;
+
+    } catch (Exception e) {
+        System.out.println("JWT Error: " + e.getMessage());
+        e.printStackTrace();
+        return null;
     }
+}
      
 
-    public Boolean validateToken(String token) {
+   public Boolean validateToken(String token) {
     try {
         Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
                 .parseClaimsJws(token);
+
         return true;
+
     } catch (ExpiredJwtException e) {
         System.out.println("JWT expired");
         return false;
+
     } catch (Exception e) {
+        System.out.println("JWT Validation Error: " + e.getMessage());
+        e.printStackTrace();
         return false;
     }
 }
