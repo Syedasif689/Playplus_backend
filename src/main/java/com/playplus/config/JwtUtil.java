@@ -26,13 +26,21 @@ public class JwtUtil {
     }
 
     public String generateToken(String username) {
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
-                .compact();
-    }
+
+    Date now = new Date();
+    Date expiry = new Date(System.currentTimeMillis() + expiration);
+
+    System.out.println("Issued At : " + now);
+    System.out.println("Expires At: " + expiry);
+    System.out.println("Expiration MS: " + expiration);
+
+    return Jwts.builder()
+            .setSubject(username)
+            .setIssuedAt(now)
+            .setExpiration(expiry)
+            .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+            .compact();
+}
 
     public String extractUsername(String token) {
     try {
