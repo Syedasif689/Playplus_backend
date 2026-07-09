@@ -31,11 +31,12 @@ public class SecurityConfig {
    @Bean
 public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-    configuration.setAllowedOrigins(Arrays.asList(
-        "http://localhost:3000",
-         "https://playplus-frontend.vercel.app",
-         "https://play-plus-enter.vercel.app"   // ✅ Add your deployed frontend URL
-    ));
+ configuration.setAllowedOrigins(Arrays.asList(
+    "http://localhost:3000",
+    "https://playplus-frontend.vercel.app",
+    "https://play-plus-enter.vercel.app",
+    "https://playplus-frontend-six.vercel.app"   // ✅ New frontend
+));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
     configuration.setAllowCredentials(true);
