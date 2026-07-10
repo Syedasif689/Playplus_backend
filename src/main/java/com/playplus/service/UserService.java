@@ -212,16 +212,25 @@ public Video dislikeVideo(Long userId, Long videoId) {
     }
 
     // Toggle dislike
-    if (user.getDislikedVideos().contains(videoId)) {
-        user.getDislikedVideos().remove(videoId);
-        video.setDislikes(Math.max(0, video.getDislikes() - 1));
-    } else {
-        // Prevent duplicate insert
-        if (!user.getDislikedVideos().contains(videoId)) {
-            user.getDislikedVideos().add(videoId);
-            video.setDislikes(video.getDislikes() + 1);
-        }
+   if (user.getDislikedVideos().contains(videoId)) {
+
+    user.getDislikedVideos().remove(videoId);
+    video.setDislikes(Math.max(0, video.getDislikes() - 1));
+
+} else {
+
+    System.out.println("Before = " + user.getDislikedVideos());
+
+    boolean added = user.getDislikedVideos().add(videoId);
+
+    System.out.println("Added = " + added);
+
+    System.out.println("After = " + user.getDislikedVideos());
+
+    if (added) {
+        video.setDislikes(video.getDislikes() + 1);
     }
+}
 
     userRepository.save(user);
     return videoRepository.save(video);

@@ -2,7 +2,9 @@ package com.playplus.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
@@ -69,19 +71,21 @@ public class User {
     private LocalDateTime verificationCodeExpiry;
     
     // Store liked video IDs
-    @ElementCollection
-    @CollectionTable(name = "user_liked_videos", 
-        joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "video_id")
-    private List<Long> likedVideos = new ArrayList<>();
-    
+   @ElementCollection
+@CollectionTable(
+    name = "user_liked_videos",
+    joinColumns = @JoinColumn(name = "user_id")
+)
+@Column(name = "video_id")
+private Set<Long> likedVideos = new HashSet<>();
     // Store disliked video IDs
     @ElementCollection
-    @CollectionTable(name = "user_disliked_videos", 
-        joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "video_id")
-    private List<Long> dislikedVideos = new ArrayList<>();
-    
+@CollectionTable(
+    name = "user_disliked_videos",
+    joinColumns = @JoinColumn(name = "user_id")
+)
+@Column(name = "video_id")
+private Set<Long> dislikedVideos = new HashSet<>();
     // ✅ NEW: Channels this user is subscribed to (as subscriber)
     @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subscription> subscribedChannels = new ArrayList<>();
@@ -144,26 +148,27 @@ public class User {
     public LocalDateTime getVerificationCodeExpiry() { return verificationCodeExpiry; }
     public void setVerificationCodeExpiry(LocalDateTime verificationCodeExpiry) { this.verificationCodeExpiry = verificationCodeExpiry; }
     
-    public List<Long> getLikedVideos() { return likedVideos; }
-    public void setLikedVideos(List<Long> likedVideos) { this.likedVideos = likedVideos; }
+    public Set<Long> getLikedVideos() { return likedVideos; }
+    public void setLikedVideos(Set<Long> likedVideos) { this.likedVideos = likedVideos; }
     
-    public List<Long> getDislikedVideos() { return dislikedVideos; }
-    public void setDislikedVideos(List<Long> dislikedVideos) { this.dislikedVideos = dislikedVideos; }
+    public Set<Long> getDislikedVideos() { return dislikedVideos; }
+    public void setDislikedVideos(Set <Long> dislikedVideos) { this.dislikedVideos = dislikedVideos; }
+public List<Subscription> getSubscribedChannels() {
+    return subscribedChannels;
+}
+
+public void setSubscribedChannels(List<Subscription> subscribedChannels) {
+    this.subscribedChannels = subscribedChannels;
+}
+
+public List<Subscription> getSubscribers() {
+    return subscribers;
+}
+
+public void setSubscribers(List<Subscription> subscribers) {
+    this.subscribers = subscribers;
+}
     
-    // ✅ NEW: Getters and Setters for subscriptions
-    public List<Subscription> getSubscribedChannels() {
-        return subscribedChannels;
-    }
-    
-    public void setSubscribedChannels(List<Subscription> subscribedChannels) {
-        this.subscribedChannels = subscribedChannels;
-    }
-    
-    public List<Subscription> getSubscribers() {
-        return subscribers;
-    }
-    
-    public void setSubscribers(List<Subscription> subscribers) {
-        this.subscribers = subscribers;
-    }
+
+  
 }
