@@ -1,5 +1,6 @@
 package com.playplus.controller;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -143,7 +144,7 @@ public class UserController {
         if (user == null) {
             return ResponseEntity.status(404).body(Map.of("error", "User not found"));
         }
-        List<Long> likedVideoIds = user.getLikedVideos();
+       List<Long> likedVideoIds = new ArrayList<>(user.getLikedVideos());
         if (likedVideoIds == null || likedVideoIds.isEmpty()) {
             return ResponseEntity.ok(List.of());
         }
