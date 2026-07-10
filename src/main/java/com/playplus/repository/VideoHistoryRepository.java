@@ -19,7 +19,12 @@ public interface VideoHistoryRepository extends JpaRepository<VideoHistory, Long
 
     List<VideoHistory> findByUserIdOrderByWatchedAtDesc(Long userId);
 
-    void deleteByUserIdAndVideoId(Long userId, Long videoId);
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM VideoHistory vh WHERE vh.user.id = :userId AND vh.video.id = :videoId")
+      void deleteByUserIdAndVideoId(
+        @Param("userId") Long userId,
+        @Param("videoId") Long videoId);
 
     @Modifying
     @Transactional

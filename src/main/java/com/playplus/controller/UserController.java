@@ -7,9 +7,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -90,6 +92,27 @@ public class UserController {
             return map;
         }).collect(Collectors.toList());
         return ResponseEntity.ok(response);
+    }
+     /**
+ * Remove a single video from watch history
+ * DELETE /api/user/history/{videoId}
+ */
+    @Transactional
+    @DeleteMapping("/history/{videoId}")
+        public ResponseEntity<?> removeHistoryItem(
+        @RequestHeader("Authorization") String authHeader,
+        @PathVariable Long videoId) {
+
+        Long userId = getUserIdFromAuthHeader(authHeader);
+
+        if (userId == null) {
+            return ResponseEntity.status(401)
+                .body(Map.of("error", "User not authenticated"));
+        }
+
+        videoHistoryRepository.deleteByUserIdAndVideoId(userId, videoId);
+
+          return ResponseEntity.ok(Map.of("message", "Video removed from history"));
     }
 
     /**
