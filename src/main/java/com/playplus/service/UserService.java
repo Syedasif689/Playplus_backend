@@ -170,71 +170,62 @@ public boolean resetPassword(String resetToken, String newPassword) {
     @Transactional
 public Video likeVideo(Long userId, Long videoId) {
 
-    System.out.println("STEP 1");
-
     User user = findById(userId);
-
-    System.out.println("STEP 2");
-
     Video video = videoRepository.findById(videoId).orElse(null);
-
-    System.out.println("STEP 3");
-
-    System.out.println("likedVideos = " + user.getLikedVideos());
-    System.out.println("dislikedVideos = " + user.getDislikedVideos());
 
     if (user == null || video == null) return null;
 
-    System.out.println("STEP 4");
-
+    // Remove dislike if present
     if (user.getDislikedVideos().contains(videoId)) {
         user.getDislikedVideos().remove(videoId);
-        video.setDislikes(video.getDislikes() - 1);
+        video.setDislikes(Math.max(0, video.getDislikes() - 1));
     }
 
-    System.out.println("STEP 5");
-
+    // Toggle like
     if (user.getLikedVideos().contains(videoId)) {
         user.getLikedVideos().remove(videoId);
-        video.setLikes(video.getLikes() - 1);
+        video.setLikes(Math.max(0, video.getLikes() - 1));
     } else {
-        user.getLikedVideos().add(videoId);
-        video.setLikes(video.getLikes() + 1);
+        // Prevent duplicate insert
+        if (!user.getLikedVideos().contains(videoId)) {
+            user.getLikedVideos().add(videoId);
+            video.setLikes(video.getLikes() + 1);
+        }
     }
 
-    System.out.println("STEP 6");
-
     userRepository.save(user);
-
-    System.out.println("STEP 7");
-
     return videoRepository.save(video);
 }
     
-    @Transactional
-    public Video dislikeVideo(Long userId, Long videoId) {
-        User user = findById(userId);
-        Video video = videoRepository.findById(videoId).orElse(null);
-        
-        if (user == null || video == null) return null;
-        
-        if (user.getLikedVideos().contains(videoId)) {
-            user.getLikedVideos().remove(videoId);
-            video.setLikes(video.getLikes() - 1);
-        }
-        
-        if (user.getDislikedVideos().contains(videoId)) {
-            user.getDislikedVideos().remove(videoId);
-            video.setDislikes(video.getDislikes() - 1);
-        } else {
+   @Transactional
+public Video dislikeVideo(Long userId, Long videoId) {
+
+    User user = findById(userId);
+    Video video = videoRepository.findById(videoId).orElse(null);
+
+    if (user == null || video == null) return null;
+
+    // Remove like if present
+    if (user.getLikedVideos().contains(videoId)) {
+        user.getLikedVideos().remove(videoId);
+        video.setLikes(Math.max(0, video.getLikes() - 1));
+    }
+
+    // Toggle dislike
+    if (user.getDislikedVideos().contains(videoId)) {
+        user.getDislikedVideos().remove(videoId);
+        video.setDislikes(Math.max(0, video.getDislikes() - 1));
+    } else {
+        // Prevent duplicate insert
+        if (!user.getDislikedVideos().contains(videoId)) {
             user.getDislikedVideos().add(videoId);
             video.setDislikes(video.getDislikes() + 1);
         }
-        
-        userRepository.save(user);
-        return videoRepository.save(video);
     }
-    
+
+    userRepository.save(user);
+    return videoRepository.save(video);
+}
     public String getVideoReaction(Long userId, Long videoId) {
         User user = findById(userId);
         if (user == null) return "none";
