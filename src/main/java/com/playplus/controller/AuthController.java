@@ -47,7 +47,7 @@ public class AuthController {
         }
         
         String token = jwtUtil.generateToken(user.getUsername());
-        return ResponseEntity.ok(new JwtResponse(token, user.getId(), user.getUsername(), user.getEmail()));
+        return ResponseEntity.ok(new JwtResponse(token, user.getId(), user.getUsername(), user.getEmail(),user.getProfileImage()));
     }
     
     @PostMapping("/signup")
@@ -199,7 +199,7 @@ public class AuthController {
             }
             
             String token = jwtUtil.generateToken(user.getUsername());
-            JwtResponse response = new JwtResponse(token, user.getId(), user.getUsername(), user.getEmail());
+            JwtResponse response = new JwtResponse(token, user.getId(), user.getUsername(), user.getEmail(),user.getProfileImage());
             return ResponseEntity.ok(response);
             
         } catch (Exception e) {

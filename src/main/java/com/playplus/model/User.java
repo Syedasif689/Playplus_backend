@@ -29,7 +29,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 1000)
+    @Column(name = "profile_image", length = 1000)
     private String profileImage;
 
     @Column(unique = true, nullable = false)
