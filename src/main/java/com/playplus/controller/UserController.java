@@ -13,11 +13,14 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.playplus.config.JwtUtil;
+import com.playplus.dto.ProfileImageRequest;
 import com.playplus.model.Subscription;
 import com.playplus.model.User;
 import com.playplus.model.Video;
@@ -67,6 +70,30 @@ public class UserController {
             return ResponseEntity.status(500).body(Map.of("error", "Failed to fetch subscriptions: " + e.getMessage()));
         }
     }
+     
+        @PutMapping("/profile-image")
+public ResponseEntity<?> updateProfileImage(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestBody ProfileImageRequest request) {
+
+    Long userId = getUserIdFromAuthHeader(authHeader);
+
+    if (userId == null) {
+        return ResponseEntity.status(401).body("Unauthorized");
+    }
+
+    User user = userService.findById(userId);
+
+    if (user == null) {
+        return ResponseEntity.notFound().build();
+    }
+
+    user.setProfileImage(request.getProfileImage());
+
+    userService.save(user);
+
+    return ResponseEntity.ok(user);
+}
 
     /**
      * Get current user's watch history
@@ -115,7 +142,7 @@ public class UserController {
 
           return ResponseEntity.ok(Map.of("message", "Video removed from history"));
     }
-
+      
     /**
      * Clear entire watch history
      * DELETE /api/user/history
@@ -129,7 +156,7 @@ public class UserController {
         videoHistoryRepository.deleteAllByUserId(userId);
         return ResponseEntity.ok(Map.of("message", "History cleared"));
     }
-
+ 
     /**
      * Get liked videos (list of Video objects)
      * GET /api/user/liked-videos

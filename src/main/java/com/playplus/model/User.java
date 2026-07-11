@@ -28,7 +28,10 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
+    @Column(length = 1000)
+    private String profileImage;
+
     @Column(unique = true, nullable = false)
     private String username;
     
@@ -39,8 +42,6 @@ public class User {
     private String password;
     
     private String fullName;
-    
-    private String profilePicture;
     
     @Column(length = 500)
     private String bio;
@@ -97,8 +98,8 @@ private Set<Long> dislikedVideos = new HashSet<>();
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
-        if (profilePicture == null || profilePicture.isEmpty()) {
-            profilePicture = "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + username;
+        if (profileImage == null || profileImage.isEmpty()) {
+            profileImage = "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + username;
         }
     }
     
@@ -118,8 +119,8 @@ private Set<Long> dislikedVideos = new HashSet<>();
     public String getFullName() { return fullName; }
     public void setFullName(String fullName) { this.fullName = fullName; }
     
-    public String getProfilePicture() { return profilePicture; }
-    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
+    public String getProfileImage() { return profileImage; }
+    public void setProfileImage(String profileImage) { this.profileImage = profileImage; }
     
     public String getBio() { return bio; }
     public void setBio(String bio) { this.bio = bio; }
@@ -153,6 +154,8 @@ private Set<Long> dislikedVideos = new HashSet<>();
     
     public Set<Long> getDislikedVideos() { return dislikedVideos; }
     public void setDislikedVideos(Set <Long> dislikedVideos) { this.dislikedVideos = dislikedVideos; }
+    
+
 public List<Subscription> getSubscribedChannels() {
     return subscribedChannels;
 }

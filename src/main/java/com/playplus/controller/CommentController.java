@@ -47,7 +47,40 @@ public class CommentController {
         List<Comment> comments = commentService.getCommentsByVideoId(videoId);
         return ResponseEntity.ok(comments);
     }
-    
+     @PutMapping("/profile-image")
+       public ResponseEntity<?> updateProfileImage(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestBody Map<String, String> request) {
+
+    try {
+
+        Long userId = getUserIdFromAuthHeader(authHeader);
+
+        if (userId == null) {
+            return ResponseEntity.status(401)
+                    .body(Map.of("error", "User not authenticated"));
+        }
+
+        User user = userService.findById(userId);
+
+        if (user == null) {
+            return ResponseEntity.status(404)
+                    .body(Map.of("error", "User not found"));
+        }
+
+        user.setProfileImage(request.get("profileImage"));
+
+        userService.save(user);
+
+        return ResponseEntity.ok(user);
+
+    } catch (Exception e) {
+
+        return ResponseEntity.badRequest()
+                .body(Map.of("error", e.getMessage()));
+
+    }
+}
     // Add a comment
     @PostMapping("/video/{videoId}")
     public ResponseEntity<?> addComment(

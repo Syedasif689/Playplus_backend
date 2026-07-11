@@ -90,7 +90,7 @@ public class UserService {
         newUser.setGoogleId(googleId);
         newUser.setIsGoogleUser(true);
         newUser.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-        newUser.setProfilePicture(profilePicture);
+        newUser.setProfileImage(profilePicture);
         
         return userRepository.save(newUser);
     }
