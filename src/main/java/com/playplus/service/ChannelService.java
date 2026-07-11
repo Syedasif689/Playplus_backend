@@ -63,7 +63,7 @@ public class ChannelService {
                 .username(channelOwner.getUsername())
                 .fullName(channelOwner.getFullName())
                 .bio(channelOwner.getBio())
-                .profilePicture(channelOwner.getProfilePicture())
+                .profileImage(channelOwner.getProfileImage())
                 .subscriberCount(subscriberCount.intValue())
                 .isSubscribed(isSubscribed)
                 .isOwnChannel(isOwnChannel)

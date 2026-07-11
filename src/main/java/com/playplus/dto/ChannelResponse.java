@@ -5,7 +5,7 @@ public class ChannelResponse {
     private String username;
     private String fullName;
     private String bio;
-    private String profilePicture;
+    private String profileImage;
     private Integer subscriberCount;
     private Boolean isSubscribed;
     private Boolean isOwnChannel;
@@ -22,7 +22,7 @@ public class ChannelResponse {
         this.username = username;
         this.fullName = fullName;
         this.bio = bio;
-        this.profilePicture = profilePicture;
+        this.profileImage = profilePicture;
         this.subscriberCount = subscriberCount;
         this.isSubscribed = isSubscribed;
         this.isOwnChannel = isOwnChannel;
@@ -35,7 +35,7 @@ public class ChannelResponse {
         private String username;
         private String fullName;
         private String bio;
-        private String profilePicture;
+        private String profileImage;
         private Integer subscriberCount;
         private Boolean isSubscribed;
         private Boolean isOwnChannel;
@@ -45,14 +45,14 @@ public class ChannelResponse {
         public Builder username(String username) { this.username = username; return this; }
         public Builder fullName(String fullName) { this.fullName = fullName; return this; }
         public Builder bio(String bio) { this.bio = bio; return this; }
-        public Builder profilePicture(String profilePicture) { this.profilePicture = profilePicture; return this; }
+        public Builder profileImage(String profileImage) { this.profileImage = profileImage; return this; }
         public Builder subscriberCount(Integer subscriberCount) { this.subscriberCount = subscriberCount; return this; }
         public Builder isSubscribed(Boolean isSubscribed) { this.isSubscribed = isSubscribed; return this; }
         public Builder isOwnChannel(Boolean isOwnChannel) { this.isOwnChannel = isOwnChannel; return this; }
         public Builder videoCount(Integer videoCount) { this.videoCount = videoCount; return this; }
         
         public ChannelResponse build() {
-            return new ChannelResponse(id, username, fullName, bio, profilePicture, 
+            return new ChannelResponse(id, username, fullName, bio, profileImage, 
                                       subscriberCount, isSubscribed, isOwnChannel, videoCount);
         }
     }
@@ -94,12 +94,12 @@ public class ChannelResponse {
         this.bio = bio;
     }
     
-    public String getProfilePicture() {
-        return profilePicture;
+    public String getProfileImage() {
+        return profileImage;
     }
     
-    public void setProfilePicture(String profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
     
     public Integer getSubscriberCount() {

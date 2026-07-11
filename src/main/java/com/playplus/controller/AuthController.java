@@ -189,7 +189,7 @@ public class AuthController {
                     user.setGoogleId(googleId);
                     user.setIsGoogleUser(true);
                     user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-                    user.setProfilePicture(profilePicture != null ? profilePicture : 
+                    user.setProfileImage(profilePicture != null ? profilePicture : 
                         "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + 
                         (name != null && !name.isEmpty() ? name.charAt(0) : email.charAt(0)));
                     user = userService.save(user);

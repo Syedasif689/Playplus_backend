@@ -96,12 +96,14 @@ private Set<Long> dislikedVideos = new HashSet<>();
     private List<Subscription> subscribers = new ArrayList<>();
     
     @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-        if (profileImage == null || profileImage.isEmpty()) {
-            profileImage = "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + username;
-        }
+protected void onCreate() {
+    createdAt = LocalDateTime.now();
+
+    if (profileImage == null || profileImage.isEmpty()) {
+        profileImage =
+            "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + username;
     }
+}
     
     // Getters and Setters
     public Long getId() { return id; }
