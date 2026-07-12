@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.playplus.config.JwtUtil;
 import com.playplus.dto.ProfileImageRequest;
+import com.playplus.dto.ProfileResponse;
+import com.playplus.dto.UpdateProfileRequest;
 import com.playplus.model.Subscription;
 import com.playplus.model.User;
 import com.playplus.model.Video;
@@ -97,6 +99,80 @@ public class UserController {
 
     return ResponseEntity.ok(user);
     }
+       /**
+         * Get user profile (username, bio, social links)
+         * GET /api/user/profile
+         */
+       
+        @GetMapping("/profile")
+        public ResponseEntity<?> getProfile(
+        @RequestHeader("Authorization") String authHeader) {
+
+    Long userId = getUserIdFromAuthHeader(authHeader);
+
+    if (userId == null) {
+        return ResponseEntity.status(401).body("Unauthorized");
+    }
+
+    ProfileResponse profile = userService.getProfile(userId);
+
+    if (profile == null) {
+        return ResponseEntity.notFound().build();
+    }
+
+    return ResponseEntity.ok(profile);
+}
+        /**
+         * Update user profile (username, bio, social links)
+         * PUT /api/user/profile
+         */
+     
+        @PutMapping("/profile")
+public ResponseEntity<?> updateProfile(
+        @RequestHeader("Authorization") String authHeader,
+        @RequestBody UpdateProfileRequest request) {
+
+    Long userId = getUserIdFromAuthHeader(authHeader);
+
+    if (userId == null) {
+        return ResponseEntity.status(401).body("Unauthorized");
+    }
+
+    try {
+
+        User user = userService.updateProfile(userId, request);
+
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("id", user.getId());
+        response.put("username", user.getUsername());
+        response.put("email", user.getEmail());
+        response.put("fullName", user.getFullName());
+        response.put("bio", user.getBio());
+        response.put("profileImage", user.getProfileImage());
+
+        List<Map<String, String>> links = user.getSocialLinks()
+                .stream()
+                .map(link -> {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("platform", link.getPlatform());
+                    map.put("url", link.getUrl());
+                    return map;
+                })
+                .collect(Collectors.toList());
+
+        response.put("socialLinks", links);
+
+        return ResponseEntity.ok(response);
+
+    } catch (RuntimeException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+}
 
     /**
      * Get current user's watch history

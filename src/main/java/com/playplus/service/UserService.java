@@ -1,6 +1,7 @@
 package com.playplus.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.playplus.dto.ProfileResponse;
+import com.playplus.dto.SocialLinkRequest;
+import com.playplus.dto.UpdateProfileRequest;
+import com.playplus.model.SocialLink;
 import com.playplus.model.User;
 import com.playplus.model.Video;
+import com.playplus.repository.SocialLinkRepository;
 import com.playplus.repository.UserRepository;
 import com.playplus.repository.VideoRepository;
 
@@ -18,7 +24,10 @@ public class UserService {
     
     @Autowired
     private UserRepository userRepository;
-    
+
+    @Autowired
+    private SocialLinkRepository socialLinkRepository;
+
     @Autowired
     private VideoRepository videoRepository;
     
@@ -112,7 +121,97 @@ public class UserService {
         
         return code;
     }
+    // Update user profile
+      @Transactional
+     public User updateProfile(Long userId, UpdateProfileRequest request) {
+
+    User user = findById(userId);
+
+    if (user == null) {
+        return null;
+    }
+
+    // Update username
+    if (request.getUsername() != null &&
+        !request.getUsername().trim().isEmpty()) {
+
+       String newUsername = request.getUsername().trim();
+
+       if (!newUsername.equals(user.getUsername())
+        && userRepository.existsByUsername(newUsername)) {
+       throw new RuntimeException("Username already exists");
+    }
+
+        user.setUsername(newUsername.trim());
+    }
+
+    // Update bio
+    if (request.getBio() != null) {
+    user.setBio(request.getBio().trim());
+    }
     
+
+    // Remove old links
+    socialLinkRepository.deleteByUser(user);
+
+    // Save new links
+    if (request.getSocialLinks() != null) {
+
+    for (SocialLinkRequest dto : request.getSocialLinks()) {
+
+        if (dto.getUrl() == null || dto.getUrl().isBlank()) {
+            continue;
+        }
+
+        
+        if (dto.getPlatform() == null ||
+       dto.getPlatform().isBlank() ||
+       dto.getUrl() == null ||
+       dto.getUrl().isBlank()) {
+       continue;
+       }
+       SocialLink link = new SocialLink();
+       link.setPlatform(dto.getPlatform().trim());
+        link.setUrl(dto.getUrl().trim());
+        link.setUser(user);
+        socialLinkRepository.save(link);
+
+    }
+}
+
+    return userRepository.save(user);
+}
+          public ProfileResponse getProfile(Long userId) {
+
+    User user = findById(userId);
+
+    if (user == null) {
+        return null;
+    }
+
+    ProfileResponse response = new ProfileResponse();
+
+    response.setId(user.getId());
+    response.setUsername(user.getUsername());
+    response.setEmail(user.getEmail());
+    response.setFullName(user.getFullName());
+    response.setBio(user.getBio());
+    response.setProfileImage(user.getProfileImage());
+
+    List<SocialLinkRequest> links = user.getSocialLinks()
+            .stream()
+            .map(link -> {
+                SocialLinkRequest dto = new SocialLinkRequest();
+                dto.setPlatform(link.getPlatform());
+                dto.setUrl(link.getUrl());
+                return dto;
+            })
+            .toList();
+
+    response.setSocialLinks(links);
+
+    return response;
+}
     // Verify the code and generate reset token
     @Transactional
     public String verifyCodeAndGenerateToken(String email, String code) {
