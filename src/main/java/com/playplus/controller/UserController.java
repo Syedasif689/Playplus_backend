@@ -72,7 +72,7 @@ public class UserController {
     }
      
         @PutMapping("/profile-image")
-public ResponseEntity<?> updateProfileImage(
+        public ResponseEntity<?> updateProfileImage(
         @RequestHeader("Authorization") String authHeader,
         @RequestBody ProfileImageRequest request) {
 
@@ -88,12 +88,15 @@ public ResponseEntity<?> updateProfileImage(
         return ResponseEntity.notFound().build();
     }
 
+    if (request.getProfileImage() == null || request.getProfileImage().isBlank()) {
+    user.setProfileImage(null);
+    } else {
     user.setProfileImage(request.getProfileImage());
-
+    }
     userService.save(user);
 
     return ResponseEntity.ok(user);
-}
+    }
 
     /**
      * Get current user's watch history

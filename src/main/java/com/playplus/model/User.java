@@ -77,6 +77,12 @@ public class User {
     name = "user_liked_videos",
     joinColumns = @JoinColumn(name = "user_id")
 )
+@OneToMany(
+    mappedBy = "user",
+    cascade = CascadeType.ALL,
+    orphanRemoval = true
+)
+private List<SocialLink> socialLinks = new ArrayList<>();
 @Column(name = "video_id")
 private Set<Long> likedVideos = new HashSet<>();
     // Store disliked video IDs
@@ -157,6 +163,13 @@ protected void onCreate() {
     public Set<Long> getDislikedVideos() { return dislikedVideos; }
     public void setDislikedVideos(Set <Long> dislikedVideos) { this.dislikedVideos = dislikedVideos; }
     
+    public List<SocialLink> getSocialLinks() {
+    return socialLinks;
+    }
+
+    public void setSocialLinks(List<SocialLink> socialLinks) {
+    this.socialLinks = socialLinks;
+    }
 
 public List<Subscription> getSubscribedChannels() {
     return subscribedChannels;
