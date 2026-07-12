@@ -167,6 +167,10 @@ public ResponseEntity<?> updateProfile(
 
         response.put("socialLinks", links);
 
+        String newToken = jwtUtil.generateToken(user.getUsername());
+
+        response.put("token", newToken);
+
         return ResponseEntity.ok(response);
 
     } catch (RuntimeException e) {
