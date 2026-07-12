@@ -77,14 +77,14 @@ public class User {
     name = "user_liked_videos",
     joinColumns = @JoinColumn(name = "user_id")
 )
-@OneToMany(
+@Column(name = "video_id")
+private Set<Long> likedVideos = new HashSet<>();
+    @OneToMany(
     mappedBy = "user",
     cascade = CascadeType.ALL,
     orphanRemoval = true
-)
-private List<SocialLink> socialLinks = new ArrayList<>();
-@Column(name = "video_id")
-private Set<Long> likedVideos = new HashSet<>();
+    )
+    private List<SocialLink> socialLinks = new ArrayList<>();
     // Store disliked video IDs
     @ElementCollection
 @CollectionTable(
@@ -93,6 +93,7 @@ private Set<Long> likedVideos = new HashSet<>();
 )
 @Column(name = "video_id")
 private Set<Long> dislikedVideos = new HashSet<>();
+     
     // ✅ NEW: Channels this user is subscribed to (as subscriber)
     @OneToMany(mappedBy = "subscriber", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Subscription> subscribedChannels = new ArrayList<>();
