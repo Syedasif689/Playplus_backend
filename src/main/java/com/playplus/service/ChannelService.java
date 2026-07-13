@@ -38,6 +38,10 @@ public class ChannelService {
      */
     public ChannelResponse getChannelInfo(String username, Long currentUserId) {
         // Find the channel owner
+        System.out.println("Requested username = " + username);
+        userRepository.findAll().forEach(u ->
+       System.out.println("DB USER = " + u.getUsername())
+      );
         User channelOwner = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Channel not found: " + username));
 
