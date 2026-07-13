@@ -170,34 +170,66 @@ public class AuthController {
         }
         
         try {
-            User user = userService.findByGoogleId(googleId);
-            
-            if (user == null) {
-                user = userService.findByEmail(email);
-                if (user != null) {
-                    user.setGoogleId(googleId);
-                    user.setIsGoogleUser(true);
-                    user = userService.save(user);
-                    System.out.println("✅ Google account linked to existing user: " + email);
-                } else {
-                    // Create new user with clean username
-                    user = new User();
-                    String cleanUsername = generateCleanUsername(email, name);
-                    user.setUsername(cleanUsername);
-                    user.setEmail(email);
-                    user.setFullName(name != null ? name : email.split("@")[0]);
-                    user.setGoogleId(googleId);
-                    user.setIsGoogleUser(true);
-                    user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
-                    user.setProfileImage(profilePicture != null ? profilePicture : 
-                        "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" + 
-                        (name != null && !name.isEmpty() ? name.charAt(0) : email.charAt(0)));
-                    user = userService.save(user);
-                    System.out.println("✅ New user created via Google: " + email);
-                    System.out.println("✅ Username: " + cleanUsername);
-                }
-            }
-            
+           User user = userService.findByGoogleId(googleId);
+
+if (user == null) {
+
+    user = userService.findByEmail(email);
+
+    if (user != null) {
+
+        user.setGoogleId(googleId);
+        user.setIsGoogleUser(true);
+
+        // Keep custom Play+ profile image
+        if (user.getProfileImage() == null ||
+            user.getProfileImage().contains("googleusercontent.com")) {
+
+            user.setProfileImage(profilePicture);
+        }
+
+        user = userService.save(user);
+
+        System.out.println("✅ Google account linked to existing user: " + email);
+
+    } else {
+
+        // Create new user with clean username
+        user = new User();
+
+        String cleanUsername = generateCleanUsername(email, name);
+
+        user.setUsername(cleanUsername);
+        user.setEmail(email);
+        user.setFullName(name != null ? name : email.split("@")[0]);
+        user.setGoogleId(googleId);
+        user.setIsGoogleUser(true);
+        user.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+
+        user.setProfileImage(
+            profilePicture != null
+                ? profilePicture
+                : "https://ui-avatars.com/api/?background=3ea6ff&color=fff&name=" +
+                  (name != null && !name.isEmpty() ? name.charAt(0) : email.charAt(0))
+        );
+
+        user = userService.save(user);
+
+        System.out.println("✅ New user created via Google: " + email);
+        System.out.println("✅ Username: " + cleanUsername);
+    }
+
+} else {
+
+    // Existing Google user logging in again
+    if (user.getProfileImage() == null ||
+        user.getProfileImage().contains("googleusercontent.com")) {
+
+        user.setProfileImage(profilePicture);
+    }
+
+    user = userService.save(user);
+}
             String token = jwtUtil.generateToken(user.getUsername());
             JwtResponse response = new JwtResponse(token, user.getId(), user.getUsername(), user.getEmail(),user.getProfileImage());
             return ResponseEntity.ok(response);
