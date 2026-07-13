@@ -51,6 +51,48 @@ public class UserController {
 
     @Autowired
     private VideoRepository videoRepository;
+     /**
+      * user login profile update
+      */
+       @GetMapping("/me")
+        public ResponseEntity<?> getCurrentUser(
+        @RequestHeader("Authorization") String authHeader) {
+
+    Long userId = getUserIdFromAuthHeader(authHeader);
+
+    if (userId == null) {
+        return ResponseEntity.status(401).body("Unauthorized");
+    }
+
+    User user = userService.findById(userId);
+
+    if (user == null) {
+        return ResponseEntity.notFound().build();
+    }
+
+    Map<String, Object> response = new HashMap<>();
+
+    response.put("id", user.getId());
+    response.put("username", user.getUsername());
+    response.put("email", user.getEmail());
+    response.put("fullName", user.getFullName());
+    response.put("bio", user.getBio());
+    response.put("profileImage", user.getProfileImage());
+
+    List<Map<String,String>> links =
+            user.getSocialLinks()
+            .stream()
+            .map(link -> {
+                Map<String,String> map = new HashMap<>();
+                map.put("platform", link.getPlatform());
+                map.put("url", link.getUrl());
+                return map;
+            }).toList();
+
+    response.put("socialLinks", links);
+
+    return ResponseEntity.ok(response);
+}
 
     /**
      * Get all channels the authenticated user is subscribed to.
