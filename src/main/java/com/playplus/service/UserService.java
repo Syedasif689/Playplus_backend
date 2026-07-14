@@ -143,6 +143,10 @@ public class UserService {
     }
 
         user.setUsername(newUsername.trim());
+        videoRepository.updateCreatorName(
+        user.getId(),
+        newUsername
+);
     }
 
     // Update bio
