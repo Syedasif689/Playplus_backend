@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.playplus.dto.ChannelResponse;
+import com.playplus.dto.SocialLinkRequest;
 import com.playplus.dto.SubscriptionResponse;
 import com.playplus.model.Subscription;
 import com.playplus.model.User;
@@ -16,6 +17,7 @@ import com.playplus.model.Video;
 import com.playplus.repository.SubscriptionRepository;
 import com.playplus.repository.UserRepository;
 import com.playplus.repository.VideoRepository;
+
 
 @Service
 public class ChannelService {
@@ -60,19 +62,28 @@ public class ChannelService {
         // Get video count
         List<Video> channelVideos = videoRepository.findByCreatorId(channelOwner.getId());
         int videoCount = channelVideos.size();
-
+         List<SocialLinkRequest> links = channelOwner.getSocialLinks()
+        .stream()
+        .map(link -> {
+            SocialLinkRequest dto = new SocialLinkRequest();
+            dto.setPlatform(link.getPlatform());
+            dto.setUrl(link.getUrl());
+            return dto;
+        })
+        .toList();
         // Build response using builder pattern
         return ChannelResponse.builder()
-                .id(channelOwner.getId())
-                .username(channelOwner.getUsername())
-                .fullName(channelOwner.getFullName())
-                .bio(channelOwner.getBio())
-                .profileImage(channelOwner.getProfileImage())
-                .subscriberCount(subscriberCount.intValue())
-                .isSubscribed(isSubscribed)
-                .isOwnChannel(isOwnChannel)
-                .videoCount(videoCount)
-                .build();
+        .id(channelOwner.getId())
+        .username(channelOwner.getUsername())
+        .fullName(channelOwner.getFullName())
+        .bio(channelOwner.getBio())
+        .profileImage(channelOwner.getProfileImage())
+        .socialLinks(links)
+        .subscriberCount(subscriberCount.intValue())
+        .isSubscribed(isSubscribed)
+        .isOwnChannel(isOwnChannel)
+        .videoCount(videoCount)
+        .build();
     }
 
     /**

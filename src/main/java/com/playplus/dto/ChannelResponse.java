@@ -1,5 +1,5 @@
 package com.playplus.dto;
-
+import java.util.List;
 public class ChannelResponse {
     private Long id;
     private String username;
@@ -10,14 +10,24 @@ public class ChannelResponse {
     private Boolean isSubscribed;
     private Boolean isOwnChannel;
     private Integer videoCount;
-    
+    private List<SocialLinkRequest> socialLinks;
     // Default constructor
     public ChannelResponse() {}
     
+    
     // All-args constructor
-    public ChannelResponse(Long id, String username, String fullName, String bio, 
-                          String profilePicture, Integer subscriberCount, 
-                          Boolean isSubscribed, Boolean isOwnChannel, Integer videoCount) {
+    public ChannelResponse(
+        Long id,
+        String username,
+        String fullName,
+        String bio,
+        String profilePicture,
+        Integer subscriberCount,
+        Boolean isSubscribed,
+        Boolean isOwnChannel,
+        Integer videoCount,
+        List<SocialLinkRequest> socialLinks
+){
         this.id = id;
         this.username = username;
         this.fullName = fullName;
@@ -27,6 +37,7 @@ public class ChannelResponse {
         this.isSubscribed = isSubscribed;
         this.isOwnChannel = isOwnChannel;
         this.videoCount = videoCount;
+        this.socialLinks = socialLinks;
     }
     
     // Builder pattern for cleaner object creation
@@ -40,7 +51,7 @@ public class ChannelResponse {
         private Boolean isSubscribed;
         private Boolean isOwnChannel;
         private Integer videoCount;
-        
+        private List<SocialLinkRequest> socialLinks;
         public Builder id(Long id) { this.id = id; return this; }
         public Builder username(String username) { this.username = username; return this; }
         public Builder fullName(String fullName) { this.fullName = fullName; return this; }
@@ -50,10 +61,23 @@ public class ChannelResponse {
         public Builder isSubscribed(Boolean isSubscribed) { this.isSubscribed = isSubscribed; return this; }
         public Builder isOwnChannel(Boolean isOwnChannel) { this.isOwnChannel = isOwnChannel; return this; }
         public Builder videoCount(Integer videoCount) { this.videoCount = videoCount; return this; }
-        
+        public Builder socialLinks(List<SocialLinkRequest> socialLinks) {
+    this.socialLinks = socialLinks;
+    return this;
+}
         public ChannelResponse build() {
-            return new ChannelResponse(id, username, fullName, bio, profileImage, 
-                                      subscriberCount, isSubscribed, isOwnChannel, videoCount);
+          return new ChannelResponse(
+        id,
+        username,
+        fullName,
+        bio,
+        profileImage,
+        subscriberCount,
+        isSubscribed,
+        isOwnChannel,
+        videoCount,
+        socialLinks
+);
         }
     }
     
@@ -100,6 +124,13 @@ public class ChannelResponse {
     
     public void setProfileImage(String profileImage) {
         this.profileImage = profileImage;
+    }
+    public List<SocialLinkRequest> getSocialLinks() {
+    return socialLinks;
+    }
+
+    public void setSocialLinks(List<SocialLinkRequest> socialLinks) {
+    this.socialLinks = socialLinks;
     }
     
     public Integer getSubscriberCount() {
