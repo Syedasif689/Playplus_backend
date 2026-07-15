@@ -35,7 +35,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     "http://localhost:3000",
     "https://playplus-frontend.vercel.app",
     "https://play-plus-enter.vercel.app",
-    "https://playplus-on.vercel.app/"   // ✅ New frontend
+    "https://playplus-on.vercel.app"
 ));
     configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
     configuration.setAllowedHeaders(Arrays.asList("*"));
